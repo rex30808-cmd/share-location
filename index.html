@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我現在的位置</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    button {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover { background-color: #059669; }
+    .result { margin-top: 30px; font-size: 16px; line-height: 1.8; }
+    a { color: #2563eb; text-decoration: none; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h2>我現在的位置</h2>
+  <button onclick="getLocation()">📍 取得目前位置</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function getLocation() {
+      const result = document.getElementById("result");
+      if (!navigator.geolocation) {
+        result.innerHTML = "❌ 你的瀏覽器不支援定位功能。";
+        return;
+      }
+      result.innerHTML = "⏳ 正在取得位置...";
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+    function success(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
+      const encodedMsg = encodeURIComponent(`我現在的位置：${mapLink}`);
+      const lineLink = `https://line.me/R/msg/text/?${encodedMsg}`;
+      
+      document.getElementById("result").innerHTML = `
+        ✅ 已取得你的位置！<br>
+        <strong>座標：</strong> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>
+        <a href="${mapLink}" target="_blank">🌏 開啟 Google 地圖</a><br><br>
+        <a href="${lineLink}" target="_self">
+          <button>📤 分享至 LINE</button>
+        </a><br>
+        <button onclick="copyLink('${mapLink}')">📋 複製定位連結</button>
+      `;
+    }
+
+    function error(err) {
+      document.getElementById("result").innerHTML = "⚠️ 定位失敗：" + err.message;
+    }
+
+    function copyLink(link) {
+      navigator.clipboard.writeText(link).then(() => {
+        alert("✅ 已複製定位連結，可以貼到任何聊天視窗！");
+      });
+    }
+  </script>
+</body>
+</html>
