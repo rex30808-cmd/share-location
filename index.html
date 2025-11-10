@@ -80,8 +80,7 @@
   </main>
 
   <footer>
-    由領隊李長紘製作 | Powered by Netlify<br>
-    リーダー 李長紘 作成 | Powered by Netlify
+    由領隊李長紘製作 | Powered by Netlify
   </footer>
 
   <script>
@@ -107,7 +106,7 @@
         const lat = pos.coords.latitude.toFixed(6);
         const lon = pos.coords.longitude.toFixed(6);
         mapUrl = `https://maps.google.com/?q=${lat},${lon}`;
-        mapLinkDiv.innerHTML = `✅ 定位成功！<br>📌 您的位置：<br><a href="${mapUrl}" target="_blank" rel="noopener">${mapUrl}</a><br>✅ 位置取得成功！<br>📌 現在地：<br><a href="${mapUrl}" target="_blank" rel="noopener">${mapUrl}</a>`;
+        mapLinkDiv.innerHTML = `✅ 定位成功 / 位置取得成功：<br><a href="${mapUrl}" target="_blank" rel="noopener">${mapUrl}</a>`;
         actions.style.display = 'block';
         getBtn.disabled = false;
         getBtn.textContent = '📍 取得目前位置 / 現在地取得';
