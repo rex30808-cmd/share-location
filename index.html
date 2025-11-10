@@ -19,20 +19,22 @@
     .step{background:rgba(255,255,255,0.6);padding:8px 12px;border-radius:12px;margin-bottom:6px;font-weight:600;}
     footer{font-size:0.85rem;padding:12px 8px;color:#495057;text-align:center;}
     a.button-link{text-decoration:none;}
-    /* 拒絕後提示 */
+    /* 拒絕後教學提示 */
     #permission-popup {
       display:none;
-      text-align:center;
+      text-align:left;
       padding:20px;
       margin:20px auto;
-      background:rgba(255,255,255,0.9);
+      background:rgba(255,255,255,0.95);
       border-radius:12px;
       box-shadow:0 4px 10px rgba(0,0,0,0.15);
-      max-width:380px;
+      max-width:400px;
+      font-size:16px;
+      line-height:1.5;
     }
-    #permission-popup button {
-      margin:8px 0;
-    }
+    #permission-popup h2 {font-size:18px; font-weight:600; margin-bottom:12px;}
+    #permission-popup ol {padding-left:20px; margin:0;}
+    #permission-popup button {margin-top:12px;}
   </style>
 </head>
 <body>
@@ -63,19 +65,19 @@
       </p>
     </div>
 
-    <!-- 拒絕後提示 -->
+    <!-- 拒絕後教學彈窗 -->
     <div id="permission-popup">
-      <div style="font-size:18px; margin-bottom:12px; font-weight:600;">
-        ⚠️ 權限尚未開啟 / 権限が許可されていません
-      </div>
-      <div style="font-size:16px; color:#555; line-height:1.5; margin-bottom:20px;">
-        為了使用完整功能，請允許【定位權限】。<br>
-        點擊下方按鈕即可前往系統設定。<br><br>
-        完全な機能を利用するために、「位置情報」の権限を許可してください。<br>
-        下のボタンをクリックすると設定画面に移動できます。
-      </div>
-      <button id="openSettingsBtn">前往設定 / 設定へ</button>
-      <button id="closePopupBtn" style="background:#ccc;color:#000;">稍後再說 / 後で</button>
+      <h2>⚠️ 尚未允許定位 / 位置情報が許可されていません</h2>
+      <p>請依照以下步驟手動開啟定位權限：<br>以下の手順で手動で位置情報を許可してください：</p>
+      <ol>
+        <li>Android：設定 → 應用程式 → 您使用的瀏覽器 → 權限 → 位置<br>
+            Androidの場合：設定 → アプリ → 使用しているブラウザ → 権限 → 位置情報</li>
+        <li>iOS：設定 → Safari → 網站設定 → 位置<br>
+            iOSの場合：設定 → Safari → サイト設定 → 位置情報</li>
+        <li>完成後，回到此頁面重新按「取得目前位置」<br>
+            完了後、このページに戻って「現在地取得」を再度押してください</li>
+      </ol>
+      <button id="closePopupBtn">我知道了 / わかりました</button>
     </div>
   </main>
 
@@ -92,7 +94,6 @@
     const mapLinkDiv = document.getElementById('mapLink');
 
     const popup = document.getElementById('permission-popup');
-    const openSettingsBtn = document.getElementById('openSettingsBtn');
     const closePopupBtn = document.getElementById('closePopupBtn');
 
     getBtn.addEventListener('click', () => {
@@ -116,6 +117,7 @@
         getBtn.disabled = false;
         getBtn.textContent = '📍 取得目前位置 / 現在地取得';
         if (err.code === err.PERMISSION_DENIED) {
+          // 拒絕 → 顯示教學彈窗
           popup.style.display = 'block';
         } else if (err.code === err.POSITION_UNAVAILABLE) {
           alert('⚠️ 無法取得定位資訊 / 位置情報を取得できません。');
@@ -141,17 +143,6 @@
       }).catch(() => {
         alert('❌ 複製失敗，請長按連結手動複製 / コピー失敗、リンクを長押しして手動でコピーしてください。');
       });
-    });
-
-    openSettingsBtn.addEventListener('click', () => {
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      if (/android/i.test(ua)) {
-        window.location.href = "intent:#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;package=" + location.hostname + ";end";
-      } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
-        alert('請前往「設定」→「Safari」→「網站設定」，允許定位權限\n設定 → Safari → サイト設定 → 位置情報を許可');
-      } else {
-        alert('請使用手機打開此頁，並手動開啟定位權限\nスマホでこのページを開き、手動で位置情報を許可してください');
-      }
     });
 
     closePopupBtn.addEventListener('click', () => {
